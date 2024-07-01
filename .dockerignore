@@ -1,0 +1,6 @@
+openrlhf/examples/scripts/ckpt
+openrlhf/examples/scripts/wandb
+openrlhf/paired_*
+openrlhf/*.npy
+openrlhf/reward_model
+openrlhf/sft_dataset
