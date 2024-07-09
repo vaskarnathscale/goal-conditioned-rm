@@ -113,6 +113,47 @@ if [[ ${1} != "slurm" ]]; then
 fi
 ```
 
+For the natural language reward model training (on helpful-harmless), you can run the script `examples/run_scripts/train_naturallanguage_rm.sh`
+
+```
+# llama7b contrastive RM training
+set -x 
+
+dataset_s3_path=s3://your-s3-bucket/hh-rlhf
+aws s3 cp $dataset_s3_path ./hh-rlhf --recursive
+
+# Do training
+read -r -d '' training_commands <<EOF
+./examples/train_rm.py \
+     --logging_steps 1 \
+     --eval_steps 1000 \
+     --train_batch_size 64 \
+     --micro_train_batch_size 1 \
+     --pretrain meta-llama/Meta-Llama-3-8B-Instruct \
+     --bf16 \
+     --max_epochs 1 \
+     --max_len 4096 \
+     --zero_stage 3 \
+     --learning_rate 1e-5 \
+     --dataset ./hh-rlhf \
+     --dataset_probs 1.0 \
+     --contrastive_loss \
+     --contrastive_loss_beta 0.5 \
+     --unsim_samples 16 \
+     --flash_attn \
+     --gradient_checkpointing \
+     --use_wandb <your wandb key> \
+     --s3_save_path <your s3 save path> \
+     --seed 0
+EOF
+
+
+if [[ ${1} != "slurm" ]]; then
+     deepspeed $training_commands
+fi
+
+```
+
 ## Representations
 
 Once you have a goal-conditioned trained reward model, to get the goal state representations from all the preferred response from the preference ranking dataset, you can run the script `examples/run_scripts/get_representation.sh`:
@@ -165,3 +206,7 @@ Once the evaluation script is run, you can run the following scripts:
 `examples/run_scripts/print_contrastive_metrics.sh` and `examples/run_scripts/print_baseline_metrics.sh`
 
 to print our the metrics of the contrastive reward model performance and the metrics for the baseline reward model performance.
+
+### Guided decoding
+
+For the guided decoding experiments, please see the README in `decoding/`.
