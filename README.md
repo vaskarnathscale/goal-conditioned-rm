@@ -1,4 +1,4 @@
-# Learning Goal-Conditioned Representations for Language RMs
+# Learning Goal-Conditioned Representations for Language Reward Models
 
 This repository is the official implementation of [Learning Goal-Conditioned Representations for Language Reward Models](https://arxiv.org/abs/2030.12345). 
 
