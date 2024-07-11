@@ -6,14 +6,8 @@ examples/experiments/dylan/openmathinstruct/jobs/*
 examples/experiments/dylan/openmathinstruct/data/*.npy
 *.npy
 *.env
-<<<<<<< HEAD
-*.jsonl
-*.json
-*.pt
-=======
 *.json
 *.jsonl
->>>>>>> master
 
 ### Code Building
 bin/
