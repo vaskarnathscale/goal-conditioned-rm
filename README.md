@@ -32,6 +32,34 @@ cd examples/build_scripts
 ./build_openrlhf.sh
 ```
 
+## Data Setup
+
+To set up the datasets, simply run the script `examples/run_scripts/data_setup.sh`. This will setup two datasets. The first one is the preference ranking dataset, which is a subset of the [OpenMathInstruct](https://huggingface.co/datasets/nvidia/OpenMathInstruct-1) dataset that pairs correct and incorrect solutions in order to construct the preference rankings. The second dataset that is set up is the base model (Open Math codellama-7b) generation dataset provided by [Nemo-Skills](https://github.com/Kipok/NeMo-Skills/tree/main) repository. Both of these datasets and then used to train and evaluate the reward model, respectively. 
+
+The citations for the sources of these datasets are the following:
+
+OpenMathInstruct
+
+```
+@article{hu2024openrlhf,
+  title={OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework},
+  author={Jian Hu and Xibin Wu and Weixun Wang and Xianyu and Dehao Zhang and Yu Cao},
+  journal={arXiv preprint arXiv:2405.11143},
+  year={2024}
+}
+```
+
+Nemo-Skills
+
+```
+@article{toshniwal2024openmath,
+  title   = {OpenMathInstruct-1: A 1.8 Million Math Instruction Tuning Dataset},
+  author  = {Shubham Toshniwal and Ivan Moshkov and Sean Narenthiran and Daria Gitman and Fei Jia and Igor Gitman},
+  year    = {2024},
+  journal = {arXiv preprint arXiv: Arxiv-2402.10176}
+}
+```
+
 ## Training
 
 In this section, we provide several commands to run the training. We also provide various example scripts under examples/run_scripts. All the runs need to happen from the repository's root directory.
