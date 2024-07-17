@@ -15,7 +15,7 @@ read -r -d '' training_commands <<EOF
      --max_len 2048 \
      --zero_stage 3 \
      --learning_rate 9e-6 \
-     --dataset ./examples/data/paired_openmathinstruct-1-masked-extra-drop \
+     --dataset ./examples/data/preference_ranking_dataset \
      --dataset_probs 1.0 \
      --contrastive_loss_beta 0.5 \
      --unsim_samples 16 \
