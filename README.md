@@ -32,6 +32,61 @@ cd examples/build_scripts
 ./build_openrlhf.sh
 ```
 
+## Data Setup
+
+To set up the datasets, simply run the script `examples/run_scripts/data_setup.sh`. This will setup two datasets. The first one is the preference ranking dataset, which is a subset of the [OpenMathInstruct](https://huggingface.co/datasets/nvidia/OpenMathInstruct-1) dataset that pairs correct and incorrect solutions in order to construct the preference rankings. The second dataset that is set up is the base model (Open Math codellama-7b) generation dataset provided by [Nemo-Skills](https://github.com/Kipok/NeMo-Skills/tree/main) repository. Both of these datasets and then used to train and evaluate the reward model, respectively. For natural language experiments, no additional setup is required other than setting up HuggingFace when running the scripts.
+
+The citations for the sources of these datasets are the following:
+
+OpenMathInstruct
+
+```
+@article{hu2024openrlhf,
+  title={OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework},
+  author={Jian Hu and Xibin Wu and Weixun Wang and Xianyu and Dehao Zhang and Yu Cao},
+  journal={arXiv preprint arXiv:2405.11143},
+  year={2024}
+}
+```
+
+Nemo-Skills
+
+```
+@article{toshniwal2024openmath,
+  title   = {OpenMathInstruct-1: A 1.8 Million Math Instruction Tuning Dataset},
+  author  = {Shubham Toshniwal and Ivan Moshkov and Sean Narenthiran and Daria Gitman and Fei Jia and Igor Gitman},
+  year    = {2024},
+  journal = {arXiv preprint arXiv: Arxiv-2402.10176}
+}
+```
+
+Helpful-Harmlessness
+
+```
+@article{Bai2022TrainingAH,
+  title={Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback},
+  author={Yuntao Bai and Andy Jones and Kamal Ndousse and Amanda Askell and Anna Chen and Nova Dassarma and Dawn Drain and Stanislav Fort and Deep Ganguli and Tom Henighan and Nicholas Joseph and Saurav Kadavath and John Kernion and Tom Conerly and Sheer El-Showk and Nelson Elhage and Zac Hatfield-Dodds and Danny Hernandez and Tristan Hume and Scott Johnston and Shauna Kravec and Liane Lovitt and Neel Nanda and Catherine Olsson and Dario Amodei and Tom B. Brown and Jack Clark and Sam McCandlish and Christopher Olah and Benjamin Mann and Jared Kaplan},
+  journal={ArXiv},
+  year={2022},
+  volume={abs/2204.05862},
+  url={https://api.semanticscholar.org/CorpusID:248118878}
+}
+```
+
+HelpSteer
+
+```
+@article{Wang2023HelpSteerMH,
+  title={HelpSteer: Multi-attribute Helpfulness Dataset for SteerLM},
+  author={Zhilin Wang and Yi Dong and Jiaqi Zeng and Virginia Adams and Makesh Narsimhan Sreedhar and Daniel Egert and Olivier Delalleau and Jane Polak Scowcroft and Neel Kant and Aidan Swope and Oleksii Kuchaiev},
+  journal={ArXiv},
+  year={2023},
+  volume={abs/2311.09528},
+  url={https://api.semanticscholar.org/CorpusID:265220723}
+}
+```
+
+
 ## Training
 
 In this section, we provide several commands to run the training. We also provide various example scripts under examples/run_scripts. All the runs need to happen from the repository's root directory.
@@ -119,9 +174,6 @@ For the natural language reward model training (on helpful-harmless), you can ru
 # llama7b contrastive RM training
 set -x 
 
-dataset_s3_path=s3://your-s3-bucket/hh-rlhf
-aws s3 cp $dataset_s3_path ./hh-rlhf --recursive
-
 # Do training
 read -r -d '' training_commands <<EOF
 ./examples/train_rm.py \
@@ -135,7 +187,7 @@ read -r -d '' training_commands <<EOF
      --max_len 4096 \
      --zero_stage 3 \
      --learning_rate 1e-5 \
-     --dataset ./hh-rlhf \
+     --dataset Anthropic/hh-rlhf \
      --dataset_probs 1.0 \
      --contrastive_loss \
      --contrastive_loss_beta 0.5 \
