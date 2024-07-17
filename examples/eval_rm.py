@@ -250,7 +250,7 @@ if __name__ == "__main__":
     BS = 1
     parser = argparse.ArgumentParser()
     parser.add_argument("--completions_data_path", type=str)
-    parser.add_argument("--goal_state_path", type=str)
+    parser.add_argument("--goal_state_path", type=str, default="")
     parser.add_argument("--reward_model_path", type=str)
     parser.add_argument("--save_dir", type=str)
     parser.add_argument("--filter_threshold", type=float, default=0.0)
