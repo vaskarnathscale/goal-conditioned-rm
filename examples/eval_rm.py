@@ -216,31 +216,6 @@ def eval(reward_model, tokenizer, goal_state, results, save_path, is_vanilla):
             f.write(json.dumps(result) + "\n")
 
 
-def print_eval_results(benchmarks, model_name, data_path, filter_threshold=0.0):
-    print_roc_auc(model_name, benchmarks, data_path)
-
-    # filtering experiments are only done on the 50 sample completions of gsm8k and math
-    if full_eval:
-        if 'gsm8k' in benchmarks:
-            _print_filter_results(model_name, 'gsm8k', 1319, data_path, filter_threshold)
-        if 'math' in benchmarks:
-            _print_filter_results(model_name, 'math', 5000, data_path, filter_threshold)
-
-def _print_filter_results(model_name, benchmark, dataset_len, data_path, filter_threshold=0.0, generation_percentile=0.0):
-    dataset_path = f"{data_path}/{model_name}/{benchmark}/all/*.jsonl"
-    accuracy, filtered_per_question, tokens_saved_per_question, tokens_per_question, proportion_correct_filtered, proportion_correct = get_accuracy(dataset_path, dataset_len, filter_threshold, generation_percentile)
-    print(f"{benchmark} accuracy: {accuracy}")
-    print(f"Average number of generations filtered: {np.mean(filtered_per_question)}")
-    print(f"Total number of generations filtered: {np.sum(filtered_per_question)}")
-    print(f"Average number of tokens saved: {np.mean(tokens_saved_per_question)}")
-    print(f"Total number of tokens saved: {np.sum(tokens_saved_per_question)}")
-    print(f"Average number of tokens: {np.mean(tokens_per_question)}")
-    print(f"Total number of tokens: {np.sum(tokens_per_question)}")
-    print(f"Average proportion correct filtered: {np.mean(proportion_correct_filtered)}")
-    print(f"Average proportion correct: {np.mean(proportion_correct)}")
-    print(f"Ttest p value: {stats.ttest_ind(proportion_correct_filtered, proportion_correct)}" )
-
-
 if __name__ == "__main__":
     NEMO_TEMPLATE = """\
   System:\n\
@@ -268,10 +243,8 @@ if __name__ == "__main__":
     for benchmark in args.benchmarks:
 
         goal_state, results, output_path = prepare_data(args, benchmark)
-
-        if benchmark == 'gsm8k' or benchmark == 'math':
-            goal_state, results, output_path = prepare_data(args, benchmark.lower())
-            eval(reward_model, tokenizer, goal_state, results, output_path, args.vanilla)
         eval(reward_model, tokenizer, goal_state, results, output_path, args.vanilla)
+        if benchmark == 'gsm8k' or benchmark == 'math':
+            goal_state, results, output_path = prepare_data(args, benchmark, full_eval=True)
+            eval(reward_model, tokenizer, goal_state, results, output_path, args.vanilla)
     
-    print_eval_results(args.benchmarks, args.reward_model_path.split("/")[-1], args.save_dir, args.filter_threshold)
