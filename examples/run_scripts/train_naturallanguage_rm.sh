@@ -16,17 +16,17 @@ read -r -d '' training_commands <<EOF
      --max_epochs 1 \
      --max_len 4096 \
      --zero_stage 3 \
-     --learning_rate $3 \
+     --learning_rate 0.1 \
      --dataset ./hh-rlhf \
      --dataset_probs 1.0 \
-     --contrastive_loss \
-     --contrastive_loss_beta $1 \
+     --contrastive_loss_beta 0.5 \
+     --reward_model_strategy contrastive \
+     --contrastive_strategy cosine \
+     --value_head_strategy linear \
      --unsim_samples 16 \
      --flash_attn \
      --gradient_checkpointing \
-     --use_wandb $WANDB \
-     --s3_save_path helpful-harmless-llama-3-8b-rm-0511/beta-$1-lr-$3 \
-     --seed $2
+     --save_path helpful-harmless-llama-3-8b-rm 
 EOF
 
 
